@@ -4,6 +4,9 @@ build/
 !gradle-wrapper.jar
 *.class
 
+# Kotlin
+.kotlin/
+
 # IDE
 .idea/
 *.iml
