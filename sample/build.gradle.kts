@@ -1,11 +1,11 @@
 plugins {
-    kotlin("jvm")
-    id("com.google.devtools.ksp")
+    alias(libs.plugins.kotlin.jvm)
+    alias(libs.plugins.ksp)
     application
 }
 
 dependencies {
-    implementation(kotlin("stdlib"))
+    implementation(libs.kotlin.stdlib)
     implementation(project(":annotations"))
     ksp(project(":processor"))
 }

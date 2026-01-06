@@ -35,10 +35,19 @@ Demonstrates how to use the annotations and generated code.
 
 ## Dependencies
 
+All dependencies are managed using Gradle Version Catalog (`gradle/libs.versions.toml`):
+
 - **Kotlin**: 2.2.21 (Latest stable)
 - **KSP**: 2.2.21-2.0.4 (Latest stable)
 - **KotlinPoet**: 2.2.0 (Latest stable)
 - **Gradle**: 8.10
+
+### Version Catalog Benefits
+
+- Centralized dependency management
+- Type-safe dependency accessors
+- Easy version updates across all modules
+- Better IDE support with autocomplete
 
 ## Building
 
