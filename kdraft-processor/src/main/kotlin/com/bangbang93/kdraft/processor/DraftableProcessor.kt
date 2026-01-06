@@ -13,7 +13,6 @@ import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
-import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
@@ -54,7 +53,14 @@ class DraftableProcessor(
 
         // Get primary constructor parameters
         val primaryConstructor = classDeclaration.primaryConstructor
-        val parameters = primaryConstructor?.parameters ?: emptyList()
+        if (primaryConstructor == null) {
+            environment.logger.error(
+                "@Draftable requires a primary constructor",
+                classDeclaration
+            )
+            return
+        }
+        val parameters = primaryConstructor.parameters
 
         // Create draft class
         val draftClass = TypeSpec.classBuilder(draftClassName)
@@ -119,13 +125,27 @@ class DraftableProcessor(
             val propertyName = parameter.name?.asString() ?: return@forEach
             val propertyType = parameter.type.resolve()
             val typeName = propertyType.toTypeName()
+            val isNullable = typeName.isNullable
+            val nonNullableTypeName = typeName.copy(nullable = false)
 
-            whenCodeBuilder.addStatement(
-                "%S -> %N = value as %T",
-                propertyName,
-                propertyName,
-                typeName
-            )
+            if (isNullable) {
+                whenCodeBuilder.addStatement(
+                    "%S -> if (value == null) { %N = null } else if (value is %T) { %N = value } else { throw IllegalArgumentException(%P) }",
+                    propertyName,
+                    propertyName,
+                    nonNullableTypeName,
+                    propertyName,
+                    "Invalid type for property '$propertyName'. Expected ${typeName} but got \${value::class.qualifiedName}"
+                )
+            } else {
+                whenCodeBuilder.addStatement(
+                    "%S -> if (value is %T) { %N = value } else { throw IllegalArgumentException(%P) }",
+                    propertyName,
+                    nonNullableTypeName,
+                    propertyName,
+                    "Invalid type for property '$propertyName'. Expected ${typeName} but got \${value?.let { it::class.qualifiedName } ?: \"null\"}"
+                )
+            }
         }
 
         whenCodeBuilder.addStatement("else -> throw IllegalArgumentException(%P)", "Unknown property: \$propertyName")
@@ -141,11 +161,19 @@ class DraftableProcessor(
         parameters: List<com.google.devtools.ksp.symbol.KSValueParameter>
     ): FunSpec {
         val parameterNames = parameters.mapNotNull { it.name?.asString() }
-        val constructorArgs = parameterNames.joinToString(", ") { it }
+
+        val format = buildString {
+            append("return %T(")
+            append(parameterNames.joinToString(", ") { "%N" })
+            append(")")
+        }
+
+        val args = mutableListOf<Any>(classType)
+        args.addAll(parameterNames)
 
         return FunSpec.builder("build")
             .returns(classType)
-            .addStatement("return %T($constructorArgs)", classType)
+            .addStatement(format, *args.toTypedArray())
             .build()
     }
 
@@ -164,13 +192,17 @@ class DraftableProcessor(
             typeName == "kotlin.Boolean" || typeName == "Boolean" -> "false"
             typeName == "kotlin.Char" || typeName == "Char" -> "'\\u0000'"
             typeName == "kotlin.String" || typeName == "String" -> "\"\""
-            typeName.startsWith("kotlin.collections.List") || typeName.startsWith("List") -> "emptyList()"
-            typeName.startsWith("kotlin.collections.Set") || typeName.startsWith("Set") -> "emptySet()"
-            typeName.startsWith("kotlin.collections.Map") || typeName.startsWith("Map") -> "emptyMap()"
+            // Mutable collections must come before immutable ones
             typeName.startsWith("kotlin.collections.MutableList") || typeName.startsWith("MutableList") -> "mutableListOf()"
             typeName.startsWith("kotlin.collections.MutableSet") || typeName.startsWith("MutableSet") -> "mutableSetOf()"
             typeName.startsWith("kotlin.collections.MutableMap") || typeName.startsWith("MutableMap") -> "mutableMapOf()"
-            else -> "null as $typeName"
+            typeName.startsWith("kotlin.collections.List") || typeName.startsWith("List") -> "emptyList()"
+            typeName.startsWith("kotlin.collections.Set") || typeName.startsWith("Set") -> "emptySet()"
+            typeName.startsWith("kotlin.collections.Map") || typeName.startsWith("Map") -> "emptyMap()"
+            else -> throw IllegalArgumentException(
+                "No default value can be generated for non-nullable type '$typeName'. " +
+                    "Make the property nullable or provide explicit handling in the processor."
+            )
         }
     }
 }
