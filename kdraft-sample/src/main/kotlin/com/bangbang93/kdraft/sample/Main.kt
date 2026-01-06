@@ -14,4 +14,13 @@ fun main() {
     println("Name: ${user.name}")
     println("Email: ${user.email}")
     println("Age: ${user.age}")
+
+    // Test error handling for invalid property
+    try {
+        userDraft {
+            set("invalidProperty", 123)
+        }
+    } catch (e: IllegalArgumentException) {
+        println("\nError handling test: ${e.message}")
+    }
 }
