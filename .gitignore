@@ -1,0 +1,18 @@
+# Gradle
+.gradle/
+build/
+!gradle-wrapper.jar
+*.class
+
+# IDE
+.idea/
+*.iml
+*.iws
+*.ipr
+out/
+
+# macOS
+.DS_Store
+
+# Local configuration
+local.properties
