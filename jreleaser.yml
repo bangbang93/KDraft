@@ -59,6 +59,12 @@ files:
     - path: kdraft-processor/build/libs/kdraft-processor-{{projectVersion}}-sources.jar
     - path: kdraft-processor/build/libs/kdraft-processor-{{projectVersion}}-javadoc.jar
 
+signing:
+  active: ALWAYS
+  pgp:
+    mode: COMMAND
+    armored: true
+
 # 部署配置
 deploy:
   maven:
