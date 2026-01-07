@@ -1,6 +1,7 @@
 plugins {
   alias(libs.plugins.kotlin.jvm)
   `maven-publish`
+  signing
 }
 
 dependencies { implementation(libs.kotlin.stdlib) }
@@ -43,5 +44,22 @@ publishing {
         }
       }
     }
+  }
+
+  repositories {
+    maven {
+      name = "localStaging"
+      url = uri(layout.buildDirectory.dir("staging-deploy"))
+    }
+  }
+}
+
+signing {
+  // 使用环境变量配置签名
+  val signingKey: String? by project
+  val signingPassword: String? by project
+  if (signingKey != null && signingPassword != null) {
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["maven"])
   }
 }

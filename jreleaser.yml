@@ -65,10 +65,13 @@ files:
 
 # 部署配置
 deploy:
-  active: ALWAYS
   maven:
     mavenCentral:
-      kdraft:
+      kdraft-sonatype:
         active: ALWAYS
         url: https://central.sonatype.com/api/v1/publisher
+        stagingRepository: build/staging-deploy
+        # 需要的环境变量:
+        # JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_USERNAME
+        # JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_PASSWORD
 
