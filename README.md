@@ -1,12 +1,12 @@
 # KDraft
 
+[![Maven Central](https://img.shields.io/maven-central/v/com.bangbang93.kdraft/kdraft-annotations?label=Maven%20Central)](https://central.sonatype.com/namespace/com.bangbang93.kdraft)
+[![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
+[![Kotlin](https://img.shields.io/badge/kotlin-2.3.0-blue.svg?logo=kotlin)](http://kotlinlang.org)
+[![KSP](https://img.shields.io/badge/KSP-2.3.4-blue.svg)](https://github.com/google/ksp)
+[![GitHub release](https://img.shields.io/github/v/release/bangbang93/KDraft)](https://github.com/bangbang93/KDraft/releases)
+
 A Kotlin KSP (Kotlin Symbol Processing) annotation processor for automatic Draft DSL Builder code generation.
-
-## Project Information
-
-- **Group ID**: com.bangbang93.kdraft
-- **Artifact ID**: kdraft
-- **Project Coordinates**: com.bangbang93.kdraft:kdraft
 
 ## Features
 
@@ -14,24 +14,6 @@ A Kotlin KSP (Kotlin Symbol Processing) annotation processor for automatic Draft
 - **DSL-style Builders**: Fluent, type-safe builder pattern using Kotlin DSL syntax
 - **Dynamic Property Setting**: Set properties by name using the `set(propertyName, value)` method
 - **Type Safety**: Generated code maintains full type safety
-
-## Project Structure
-
-```
-kdraft/
-├── kdraft-annotations/    # Annotation definitions module
-├── kdraft-processor/      # KSP processor module
-└── kdraft-sample/         # Sample usage module
-```
-
-## Dependencies
-
-All dependencies are managed using Gradle Version Catalog (`gradle/libs.versions.toml`):
-
-- **Kotlin**: 2.3.0
-- **KSP**: 2.3.4
-- **KotlinPoet**: 2.2.0
-- **Gradle**: 9.0
 
 ## Usage
 
@@ -50,18 +32,11 @@ dependencies {
     ksp("com.bangbang93.kdraft:kdraft-processor:1.0.0")
 }
 
-kotlin {
-    sourceSets.main {
-        kotlin.srcDir("build/generated/ksp/main/kotlin")
-    }
-}
 ```
 
 ### 2. Annotate Your Data Class
 
 ```kotlin
-import com.bangbang93.kdraft.Draftable
-
 @Draftable
 data class User(
     val id: Int,
@@ -115,39 +90,6 @@ fun userDraft(block: UserDraft.() -> Unit): User {
 
 ```bash
 ./gradlew build
-```
-
-## Publishing
-
-This project uses **maven-publish** plugin to publish to Maven Central Portal.
-
-### Maven Central (新版本)
-
-To publish to Maven Central Portal (central.sonatype.com):
-
-**Quick setup:**
-
-```bash
-# 1. 注册并验证 namespace
-https://central.sonatype.com/
-
-# 2. 配置凭证（~/.gradle/gradle.properties）
-centralUsername=YOUR_TOKEN_USERNAME
-centralPassword=YOUR_TOKEN_PASSWORD
-signing.keyId=YOUR_GPG_KEY_ID
-signing.password=YOUR_GPG_PASSPHRASE
-signing.secretKeyRingFile=/home/bangbang93/.gnupg/secring.gpg
-
-# 3. 发布
-./gradlew publish
-```
-
-**详细指南：** [MAVEN-CENTRAL-PORTAL.md](./MAVEN-CENTRAL-PORTAL.md)
-
-### Local Testing
-
-```bash
-./gradlew publishToMavenLocal
 ```
 
 ## Running the Sample
