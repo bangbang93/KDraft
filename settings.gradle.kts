@@ -6,8 +6,8 @@ pluginManagement {
     }
 }
 
-rootProject.name = "KDraft"
+rootProject.name = "kdraft"
 
-include(":annotations")
-include(":processor")
-include(":sample")
+include(":kdraft-annotations")
+include(":kdraft-processor")
+include(":kdraft-sample")
