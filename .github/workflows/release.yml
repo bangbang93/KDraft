@@ -28,20 +28,31 @@ jobs:
       - name: Build with Gradle
         run: ./gradlew build
 
-      - name: Create GitHub Release with JReleaser
+      - name: Publish to staging repository
+        run: ./gradlew publish
+        env:
+          ORG_GRADLE_PROJECT_signingKey: ${{ secrets.GPG_PRIVATE_KEY }}
+          ORG_GRADLE_PROJECT_signingPassword: ${{ secrets.GPG_PASSPHRASE }}
+
+      - name: Run JReleaser
         env:
           JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-        run: ./gradlew jreleaserRelease
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: ./gradlew jreleaserFullRelease
 
-      - name: Upload JARs to Release
-        uses: softprops/action-gh-release@v1
-        with:
-          files: |
-            kdraft-annotations/build/libs/kdraft-annotations-*.jar
-            kdraft-processor/build/libs/kdraft-processor-*.jar
-          fail_on_unmatched_files: false
+      - name: Run JReleaser
         env:
-          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
+          JRELEASER_GPG_PASSPHRASE: ${{ secrets.GPG_PASSPHRASE }}
+          JRELEASER_GPG_PUBLIC_KEY: ${{ secrets.GPG_PUBLIC_KEY }}
+          JRELEASER_GPG_SECRET_KEY: ${{ secrets.GPG_PRIVATE_KEY }}
+          JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_USERNAME: ${{ secrets.SONATYPE_USERNAME }}
+          JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_PASSWORD: ${{ secrets.SONATYPE_PASSWORD }}
+        run: ./gradlew jreleaserFullRelease
 
       - name: JReleaser output
         if: always()
