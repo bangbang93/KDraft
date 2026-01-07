@@ -13,3 +13,5 @@ allprojects {
 
   repositories { mavenCentral() }
 }
+
+jreleaser { configFile = file("jreleaser.yml") }

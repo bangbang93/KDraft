@@ -42,10 +42,6 @@ release:
           key: 'bugs'
           labels:
             - 'bug'
-        - title: '📝 Documentation'
-          key: 'documentation'
-          labels:
-            - 'documentation'
       hide:
         contributors:
           - 'GitHub'
@@ -70,7 +66,9 @@ deploy:
       kdraft-sonatype:
         active: ALWAYS
         url: https://central.sonatype.com/api/v1/publisher
-        stagingRepository: build/staging-deploy
+        stagingRepositories:
+          - kdraft-annotations/build/staging-deploy
+          - kdraft-processor/build/staging-deploy
         # 需要的环境变量:
         # JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_USERNAME
         # JRELEASER_MAVENCENTRAL_KDRAFT_SONATYPE_PASSWORD
