@@ -19,3 +19,7 @@ out/
 
 # Local configuration
 local.properties
+
+# JReleaser
+out/
+*.log

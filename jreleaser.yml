@@ -1,0 +1,74 @@
+# JReleaser 配置文件
+# 文档: https://jreleaser.org/guide/latest/index.html
+
+project:
+  name: KDraft
+  description: A Kotlin KSP annotation processor for automatic Draft DSL Builder code generation
+  longDescription: |
+    KDraft is a Kotlin Symbol Processing (KSP) annotation processor that automatically generates
+    Draft DSL builders for data classes. It provides a fluent, type-safe builder pattern using
+    Kotlin DSL syntax with dynamic property setting capabilities.
+  links:
+    homepage: https://github.com/bangbang93/KDraft
+  authors:
+    - bangbang93
+  license: MIT
+  copyright: 2026 bangbang93
+  inceptionYear: '2026'
+
+# 发布配置
+release:
+  github:
+    overwrite: true
+    uploadAssets: ALWAYS
+    changelog:
+      formatted: ALWAYS
+      preset: conventional-commits
+      contributors:
+        format: '- {{contributorName}}{{#contributorUsernameAsLink}} ({{.}}){{/contributorUsernameAsLink}}'
+      labelers:
+        - label: 'feature'
+          title: 'regex:^(?:feat(?:ure)?):.*'
+        - label: 'bug'
+          title: 'regex:^(?:fix|bug):.*'
+        - label: 'documentation'
+          title: 'regex:^(?:docs?):.*'
+      categories:
+        - title: '🚀 Features'
+          key: 'features'
+          labels:
+            - 'feature'
+        - title: '🐛 Bug Fixes'
+          key: 'bugs'
+          labels:
+            - 'bug'
+        - title: '📝 Documentation'
+          key: 'documentation'
+          labels:
+            - 'documentation'
+      hide:
+        contributors:
+          - 'GitHub'
+      replacers:
+        - search: '\[maven-release-plugin\]'
+
+# 要上传的文件
+files:
+  active: ALWAYS
+  artifacts:
+    - path: kdraft-annotations/build/libs/kdraft-annotations-{{projectVersion}}.jar
+    - path: kdraft-annotations/build/libs/kdraft-annotations-{{projectVersion}}-sources.jar
+    - path: kdraft-annotations/build/libs/kdraft-annotations-{{projectVersion}}-javadoc.jar
+    - path: kdraft-processor/build/libs/kdraft-processor-{{projectVersion}}.jar
+    - path: kdraft-processor/build/libs/kdraft-processor-{{projectVersion}}-sources.jar
+    - path: kdraft-processor/build/libs/kdraft-processor-{{projectVersion}}-javadoc.jar
+
+# 部署配置
+deploy:
+  active: ALWAYS
+  maven:
+    mavenCentral:
+      kdraft:
+        active: ALWAYS
+        url: https://central.sonatype.com/api/v1/publisher
+

@@ -92,7 +92,7 @@ class UserDraft {
     var name: String = ""
     var email: String = ""
     var age: Int = 0
-    
+
     fun set(propertyName: String, value: Any?) {
         when (propertyName) {
             "id" -> id = value as Int
@@ -102,7 +102,7 @@ class UserDraft {
             else -> throw IllegalArgumentException("Unknown property: $propertyName")
         }
     }
-    
+
     fun build(): User = User(id, name, email, age)
 }
 
@@ -117,6 +117,39 @@ fun userDraft(block: UserDraft.() -> Unit): User {
 ./gradlew build
 ```
 
+## Publishing
+
+This project uses **maven-publish** plugin to publish to Maven Central Portal.
+
+### Maven Central (新版本)
+
+To publish to Maven Central Portal (central.sonatype.com):
+
+**Quick setup:**
+
+```bash
+# 1. 注册并验证 namespace
+https://central.sonatype.com/
+
+# 2. 配置凭证（~/.gradle/gradle.properties）
+centralUsername=YOUR_TOKEN_USERNAME
+centralPassword=YOUR_TOKEN_PASSWORD
+signing.keyId=YOUR_GPG_KEY_ID
+signing.password=YOUR_GPG_PASSPHRASE
+signing.secretKeyRingFile=/home/bangbang93/.gnupg/secring.gpg
+
+# 3. 发布
+./gradlew publish
+```
+
+**详细指南：** [MAVEN-CENTRAL-PORTAL.md](./MAVEN-CENTRAL-PORTAL.md)
+
+### Local Testing
+
+```bash
+./gradlew publishToMavenLocal
+```
+
 ## Running the Sample
 
 ```bash
@@ -128,30 +161,30 @@ fun userDraft(block: UserDraft.() -> Unit): User {
 1. Annotate a data class with `@Draftable`
 2. KSP processor scans for annotated classes during compilation
 3. For each annotated class, it generates:
-   - A Draft class with mutable properties
-   - A DSL function for convenient instance construction
-   - A `set()` method for dynamic property assignment
+    - A Draft class with mutable properties
+    - A DSL function for convenient instance construction
+    - A `set()` method for dynamic property assignment
 4. Generated code is placed in `build/generated/ksp/main/kotlin/`
 
 ## Type Support
 
 The processor supports the following types with default values:
 
-| Type | Default Value |
-|------|---------------|
-| Int | 0 |
-| Long | 0L |
-| Short | 0 |
-| Byte | 0 |
-| Float | 0.0f |
-| Double | 0.0 |
-| Boolean | false |
-| Char | '\u0000' |
-| String | "" |
-| List | emptyList() |
-| Set | emptySet() |
-| Map | emptyMap() |
-| Nullable types | null |
+| Type           | Default Value |
+|----------------|---------------|
+| Int            | 0             |
+| Long           | 0L            |
+| Short          | 0             |
+| Byte           | 0             |
+| Float          | 0.0f          |
+| Double         | 0.0           |
+| Boolean        | false         |
+| Char           | '\u0000'      |
+| String         | ""            |
+| List           | emptyList()   |
+| Set            | emptySet()    |
+| Map            | emptyMap()    |
+| Nullable types | null          |
 
 ## License
 

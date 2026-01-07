@@ -2,6 +2,7 @@
 kotlin = "2.3.0"
 ksp = "2.3.4"
 kotlinpoet = "2.2.0"
+nexus-publish = "2.0.0"
 
 [libraries]
 kotlin-stdlib = { module = "org.jetbrains.kotlin:kotlin-stdlib", version.ref = "kotlin" }
@@ -12,3 +13,4 @@ ksp-api = { module = "com.google.devtools.ksp:symbol-processing-api", version.re
 [plugins]
 kotlin-jvm = { id = "org.jetbrains.kotlin.jvm", version.ref = "kotlin" }
 ksp = { id = "com.google.devtools.ksp", version.ref = "ksp" }
+publish = { id = "io.github.gradle-nexus.publish-plugin", version.ref = "nexus-publish" }
