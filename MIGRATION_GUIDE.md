@@ -114,8 +114,10 @@ signing {
   // 使用环境变量配置签名
   val signingKey: String? by project
   val signingPassword: String? by project
-  useInMemoryPgpKeys(signingKey, signingPassword)
-  sign(publishing.publications["maven"])
+  if (signingKey != null && signingPassword != null) {
+    useInMemoryPgpKeys(signingKey, signingPassword)
+    sign(publishing.publications["maven"])
+  }
 }
 ```
 

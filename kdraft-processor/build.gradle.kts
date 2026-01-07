@@ -52,6 +52,13 @@ publishing {
       }
     }
   }
+
+  repositories {
+    maven {
+      name = "localStaging"
+      url = uri(layout.buildDirectory.dir("staging-deploy"))
+    }
+  }
 }
 
 signing {
