@@ -7,12 +7,14 @@ import com.google.devtools.ksp.processing.SymbolProcessor
 import com.google.devtools.ksp.processing.SymbolProcessorEnvironment
 import com.google.devtools.ksp.symbol.KSAnnotated
 import com.google.devtools.ksp.symbol.KSClassDeclaration
+import com.google.devtools.ksp.symbol.Modifier
 import com.google.devtools.ksp.validate
 import com.squareup.kotlinpoet.ANY
 import com.squareup.kotlinpoet.ClassName
 import com.squareup.kotlinpoet.CodeBlock
 import com.squareup.kotlinpoet.FileSpec
 import com.squareup.kotlinpoet.FunSpec
+import com.squareup.kotlinpoet.KModifier
 import com.squareup.kotlinpoet.LambdaTypeName
 import com.squareup.kotlinpoet.ParameterSpec
 import com.squareup.kotlinpoet.PropertySpec
@@ -90,6 +92,7 @@ class DraftableProcessor(
 
         // Create DSL function
         val draftFunction = FunSpec.builder(draftFunctionName)
+            .addModifiers(KModifier.INLINE)
             .addParameter(
                 ParameterSpec.builder(
                     "block",
